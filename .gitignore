@@ -1,0 +1,12 @@
+# ASDF
+.tool-versions
+
+# Bundler
+.bundle
+pkg/*
+Gemfile.lock
+
+# YARD
+.yardoc
+yardoc/
+doc/

@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*.*.*
+jobs:
+  publish:
+    name: Release to RubyGems
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Wait for tests to succeed
+        uses: lewagon/wait-on-check-action@v1.3.1
+        with:
+          ref: 'refs/heads/main'
+          running-workflow-name: 'Release to RubyGems'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 10
+          allowed-conclusions: success
+
+      - uses: actions/checkout@v3
+
+      - name: Release Gem
+        uses: simplyqio/publish-rubygems-action@2.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUBYGEMS_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
+          RELEASE_COMMAND: "rake build && gem push pkg/*.gem"
