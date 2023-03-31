@@ -1,6 +1,11 @@
-source "https://rubygems.org"
+# frozen_string_literal: true
 
-git_source(:github) {|repo_name| "https://github.com/#{repo_name}" }
+source 'https://rubygems.org'
 
-# Specify your gem's dependencies in astria-ruby.gemspec
 gemspec
+
+gem 'coveralls', require: false
+gem 'rubocop', '1.48.0', require: false
+gem 'rubocop-performance', '1.16.0', require: false
+gem 'rubocop-rake', '0.6.0', require: false
+gem 'rubocop-rspec', '2.19.0', require: false

@@ -1,11 +1,12 @@
-/.bundle/
-/.yardoc
-/_yardoc/
-/coverage/
-/doc/
-/pkg/
-/spec/reports/
-/tmp/
+# ASDF
+.tool-versions
 
-# rspec failure tracking
-.rspec_status
+# Bundler
+.bundle
+pkg/*
+Gemfile.lock
+
+# YARD
+.yardoc
+yardoc/
+doc/

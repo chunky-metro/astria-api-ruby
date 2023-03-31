@@ -1,14 +1,17 @@
-require "bundler/setup"
-require "astria/ruby"
+# frozen_string_literal: true
 
-RSpec.configure do |config|
-  # Enable flags like --only-failures and --next-failure
-  config.example_status_persistence_file_path = ".rspec_status"
+require 'rspec'
 
-  # Disable RSpec exposing methods globally on `Module` and `main`
-  config.disable_monkey_patching!
-
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
-  end
+if ENV['COVERALL']
+  require 'coveralls'
+  Coveralls.wear!
 end
+
+$:.unshift("#{File.dirname(__FILE__)}/lib")
+require 'astria'
+
+unless defined?(SPEC_ROOT)
+  SPEC_ROOT = File.expand_path(__dir__)
+end
+
+Dir[File.join(SPEC_ROOT, "support/**/*.rb")].each { |f| require f }

@@ -1,43 +1,113 @@
-# Astria::Ruby
+# Astria Ruby Client
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/astria/ruby`. To experiment with that code, run `bin/console` for an interactive prompt.
+A Ruby client for the [Astria API v2](https://developer.astria.com/v2/).
 
-TODO: Delete this and the text above, and describe your gem
+[![Build Status](https://github.com/astria/astria-ruby/actions/workflows/ci.yml/badge.svg)](https://github.com/astria/astria-ruby/actions/workflows/ci.yml)
+[![Coverage Status](https://img.shields.io/coveralls/astria/astria-ruby.svg)](https://coveralls.io/r/astria/astria-ruby?branch=main)
+
+[Astria](https://astria.com/) provides DNS hosting and domain registration that is simple and friendly.
+We provide a full API and an easy-to-use web interface so you can get your domain registered and set up with a minimal amount of effort.
+
+## Requirements
+
+- Ruby: MRI > 2.7+
 
 ## Installation
 
-Add this line to your application's Gemfile:
+You can install the gem manually:
 
-```ruby
-gem 'astria-ruby'
+```shell
+gem install astria
 ```
 
-And then execute:
+Or use Bundler and define it as a dependency in your Gemfile:
 
-    $ bundle
+```ruby
+gem 'astria', '~> 6.0'
+```
 
-Or install it yourself as:
+## Documentation
 
-    $ gem install astria-ruby
+### Relevant links
 
-## Usage
+- [`astria-ruby` RDocs](https://www.rubydoc.info/gems/astria/).
+- [Astria API documentation](https://developer.astria.com).
+- [Astria API examples repository](https://github.com/astria/astria-api-examples).
+- [Astria support documentation](https://support.astria.com).
 
-TODO: Write usage instructions here
+### Sandbox Environment
 
-## Development
+We highly recommend testing against our [sandbox environment](https://developer.astria.com/sandbox/) before using our production environment. This will allow you to avoid real purchases, live charges on your credit card, and reduce the chance of your running up against rate limits.
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+The client supports both the production and sandbox environment. To switch to sandbox pass the sandbox API host using the `base_url` option when you construct the client:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```ruby
+client = Astria::Client.new(base_url: "https://api.sandbox.astria.com", access_token: "a1b2c3")
+```
 
-## Contributing
+You will need to ensure that you are using an access token created in the sandbox environment. Production tokens will *not* work in the sandbox environment.
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/astria-ruby. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+### Examples
+
+Be sure to require the gem before trying any of the examples:
+
+```ruby
+require 'astria'
+```
+
+#### Setting a custom `User-Agent` header
+
+You can customize the `User-Agent` header for the calls made to the Astria API:
+
+```ruby
+client = Astria::Client.new(user_agent: "my-app/1.0")
+```
+
+The value you provide will be prepended to the default `User-Agent` the client uses. For example, if you use `my-app/1.0`, the final header value will be `my-app/1.0 astria-ruby/0.14.0` (note that it will vary depending on the client version).
+
+We recommend to customize the user agent. If you are building a library or integration on top of the official client, customizing the client will help us to understand what is this client used for, and allow to contribute back or get in touch.
+
+#### Authentication
+
+```ruby
+client = Astria::Client.new(access_token: "a1b2c3")
+
+# Fetch your details
+response = client.identity.whoami   # execute the call
+response.data                       # extract the relevant data from the response or
+client.identity.whoami.data         # execute the call and get the data in one line
+
+# Define an account ID.
+account_id = 1010
+
+# You can also fetch it from the whoami response
+# as long as you authenticate with an Account access token
+whoami = client.identity.whoami.data
+account_id = whoami.account.id
+```
+
+#### Listing your domains
+
+```ruby
+puts client.domains.list_domains(account_id).data                      # => domains from the account 1234, first page
+puts client.domains.list_domains(account_id, query: { page: 3 }).data  # => domains from the account 1234, third page
+puts client.domains.all_domains(account_id).data                       # => all domains from the account 1234 (use carefully)
+```
+
+#### Create a domain
+
+```ruby
+response = client.domains.create_domain(account_id, name: "example.com")
+puts response.data
+```
+
+#### Get a domain
+
+```ruby
+response = client.domains.domain(account_id, "example.com")
+puts response.data
+```
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Astria::Ruby project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/astria-ruby/blob/master/CODE_OF_CONDUCT.md).
+Copyright (c) 2010-2022 Astria Corporation. This is Free Software distributed under the MIT license.
