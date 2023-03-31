@@ -241,6 +241,7 @@ Note that you can control `cfg_scale`, `seed`, `steps` as well, however Astria p
 
 ##### Example in cURL for better understanding
 
+```curl
 curl -X POST -H "Authorization: Bearer $API_KEY" https://api.astria.ai/tunes/26/prompts \
           -F prompt[text]="a painting of sks man in the style of alphonse mucha" \
           -F prompt[negative_prompt]="extra leg" \
@@ -262,3 +263,4 @@ curl -X POST -H "Authorization: Bearer $API_KEY" https://api.astria.ai/tunes/26/
   "tune_id": 26,
   "url": "http://api.astria.ai/tunes/26/prompts/29.json"
 }
+```
